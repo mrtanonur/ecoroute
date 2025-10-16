@@ -80,7 +80,7 @@ Platform-specific adaptations (Material/Cupertino)
 🌟 Core Features Explained
 
 1. Route Visualization
-2. 
+
 The app displays three route types simultaneously:
 
 🔵 Walking (dashed blue line)
@@ -92,7 +92,7 @@ The app displays three route types simultaneously:
 Routes are animated on display for better UX.
 
 2. Air Quality Integration
-3. 
+
 Real-time AQI data helps users:
 
 Choose healthier travel options
