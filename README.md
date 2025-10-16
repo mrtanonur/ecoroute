@@ -1,6 +1,6 @@
-EcoRoute is a Flutter-based mobile application that helps users discover nearby parks and choose eco-friendly routes with real-time air quality information. 
+EcoRoute is a Flutter-based mobile application that helps users discover nearby parks and choose eco-friendly 
 
-Make informed decisions about your travel while considering environmental impact.
+routes with real-time air quality information. Make informed decisions about your travel while considering environmental impact.
 
 ✨ Key Features
 
