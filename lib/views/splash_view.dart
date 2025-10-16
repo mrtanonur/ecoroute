@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:ecoroute/core/utils/constants/constants.dart';
-import 'package:ecoroute/dependency_injection.dart';
 import 'package:ecoroute/view_models/auth_view_model.dart';
 import 'package:ecoroute/views/home_view.dart';
 import 'package:ecoroute/views/sign_up_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SplashView extends StatefulWidget {
   const SplashView({super.key});
@@ -21,18 +21,20 @@ class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
-    _authViewModel = sl.get<AuthViewModel>();
+    _authViewModel = context.read<AuthViewModel>();
     _timer = Timer(Duration(seconds: 2), () async {
       if (await authCheck()) {
         _authViewModel!.getUserData();
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => HomeView()),
+          (route) => false,
         );
       } else {
-        Navigator.pushReplacement(
+        Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (context) => SignUpView()),
+          (route) => false,
         );
       }
     });

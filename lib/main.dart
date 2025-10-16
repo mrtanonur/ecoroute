@@ -16,8 +16,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
   await SentryFlutter.init(
-    (options) => options.dsn = dotenv
-        .env['SENTRY_DNS'], // burası değiştirildi.. öncesinde böyleydi :  SentryFlutterOptions(dsn: dotenv.env['SENTRY_DNS']
+    (options) => options.dsn = dotenv.env['SENTRY_DNS'],
     appRunner: () => runApp(
       MultiProvider(
         providers: [

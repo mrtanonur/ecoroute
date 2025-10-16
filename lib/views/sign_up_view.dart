@@ -4,6 +4,7 @@ import 'package:ecoroute/core/widgets/ecoroute_textformfield.dart';
 import 'package:ecoroute/l10n/app_localizations.dart';
 import 'package:ecoroute/view_models/auth_view_model.dart';
 import 'package:ecoroute/views/email_verification_view.dart';
+import 'package:ecoroute/views/home_view.dart';
 import 'package:ecoroute/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -35,20 +36,27 @@ class _SignUpViewState extends State<SignUpView> {
 
   void authListener() {
     final status = context.read<AuthViewModel>().status;
-    if (status == AuthStatus.failure) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(AppLocalizations.of(context)!.somethingWentWrong),
-        ),
-      );
-    } else if (status == AuthStatus.verificationProcess) {
+    if (status == AuthStatus.verificationProcess) {
       _authViewModel!.storeUserData();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.checkYourEmail)),
       );
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => EmailVerificationView()),
+        (route) => false,
+      );
+    } else if (status == AuthStatus.signIn) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomeView()),
+        (route) => false,
+      );
+    } else if (status == AuthStatus.failure) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(AppLocalizations.of(context)!.somethingWentWrong),
+        ),
       );
     }
   }
@@ -78,11 +86,17 @@ class _SignUpViewState extends State<SignUpView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     EcorouteGoogleAppleSignIn(
+                      onTap: () async {
+                        await context.read<AuthViewModel>().appleSignIn();
+                      },
                       name: AssetConstants.appleLogo,
                       width: 54,
                     ),
                     SizedBox(width: SizeConstants.s48),
                     EcorouteGoogleAppleSignIn(
+                      onTap: () async {
+                        await context.read<AuthViewModel>().googleSignIn();
+                      },
                       name: AssetConstants.googleLogo,
                       width: 54,
                     ),

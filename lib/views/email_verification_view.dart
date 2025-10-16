@@ -46,9 +46,10 @@ class EmailVerificationView extends StatelessWidget {
           SizedBox(height: SizeConstants.s48),
           TextButton(
             onPressed: () {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => SignInView()),
+                (route) => false,
               );
             },
             child: Text(AppLocalizations.of(context)!.goToSignInPage),

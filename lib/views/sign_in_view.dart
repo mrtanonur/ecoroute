@@ -42,9 +42,10 @@ class _SignInViewState extends State<SignInView> {
       ).showSnackBar(SnackBar(content: Text(_authViewModel!.error!)));
     } else if (status == AuthStatus.signIn) {
       _authViewModel!.getUserData();
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => HomeView()),
+        (route) => false,
       );
     } else if (status == AuthStatus.unVerified) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -72,7 +73,6 @@ class _SignInViewState extends State<SignInView> {
                   height: SizeConstants.s200,
                 ),
                 SignInForm(),
-
                 SizedBox(height: SizeConstants.s24),
                 Text(AppLocalizations.of(context)!.orContinueWith),
                 SizedBox(height: SizeConstants.s48),
@@ -81,11 +81,17 @@ class _SignInViewState extends State<SignInView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     EcorouteGoogleAppleSignIn(
+                      onTap: () async {
+                        await context.read<AuthViewModel>().appleSignIn();
+                      },
                       name: AssetConstants.appleLogo,
                       width: 54,
                     ),
                     SizedBox(width: SizeConstants.s48),
                     EcorouteGoogleAppleSignIn(
+                      onTap: () async {
+                        await context.read<AuthViewModel>().googleSignIn();
+                      },
                       name: AssetConstants.googleLogo,
                       width: 54,
                     ),
@@ -140,8 +146,9 @@ class _SignInFormState extends State<SignInForm> {
         children: [
           EcorouteTextFormfield(
             validator: (value) {
-              if (value == null || value.isEmpty)
+              if (value == null || value.isEmpty) {
                 return AppLocalizations.of(context)!.enterYourEmail;
+              }
 
               return null;
             },
@@ -151,8 +158,9 @@ class _SignInFormState extends State<SignInForm> {
           ),
           EcorouteTextFormfield(
             validator: (value) {
-              if (value == null || value.isEmpty)
+              if (value == null || value.isEmpty) {
                 return AppLocalizations.of(context)!.enterYourPassword;
+              }
 
               return null;
             },
@@ -167,11 +175,12 @@ class _SignInFormState extends State<SignInForm> {
               children: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ForgotPasswordView(),
                       ),
+                      (route) => false,
                     );
                   },
                   child: Text(AppLocalizations.of(context)!.forgotPassword),

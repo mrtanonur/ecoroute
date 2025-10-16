@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class EcorouteAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -16,35 +13,19 @@ class EcorouteAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Platform.isAndroid) {
-      return AppBar(
-        leading: hasLeading
-            ? IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.chevron_left),
-              )
-            : null,
-        automaticallyImplyLeading: false,
-        title: Text(title),
-        backgroundColor: color,
-      );
-    } else {
-      return CupertinoNavigationBar(
-        leading: hasLeading
-            ? IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.chevron_left),
-              )
-            : null,
-        automaticallyImplyLeading: false,
-        middle: Text(title),
-        backgroundColor: color,
-      );
-    }
+    return AppBar(
+      leading: hasLeading
+          ? IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.chevron_left),
+            )
+          : null,
+      automaticallyImplyLeading: false,
+      title: Text(title),
+      backgroundColor: color,
+    );
   }
 
   @override

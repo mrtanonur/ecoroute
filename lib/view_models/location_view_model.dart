@@ -46,16 +46,17 @@ class LocationViewModel extends ChangeNotifier {
   Map<LatLng, int> routePollution = {};
   int? destinationAqi;
 
-  String? selectedPark;
+  String? selectedParkId;
 
   void setSelectedPark(String id) {
-    selectedPark = id;
+    selectedParkId = id;
   }
 
+  // fetch air pollution data
   Future fetchAirPollutionForDestination(String mode) async {
-    if (routeCoordinates[mode] == null || routeCoordinates[mode]!.isEmpty)
+    if (routeCoordinates[mode] == null || routeCoordinates[mode]!.isEmpty) {
       return;
-
+    }
     routePollution.clear();
 
     final destination = routeCoordinates[mode]!.last;
@@ -75,45 +76,40 @@ class LocationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getAirPollutionData(double latitude, double longitude) async {
-    final response = await _openWeatherSevice.getAirPollutionData(
-      latitude,
-      longitude,
-    );
-
-    response.fold((Object object) {}, (dynamic dynamic) {
-      return dynamic;
-    });
-    notifyListeners();
-  }
-
   // Add method to set map controller
   void setMapController(GoogleMapController controller) {
     _mapController = controller;
     notifyListeners();
   }
 
+  // set navigationIndex
   void setNavigationIndex(index) {
     parkNavigationIndex = index;
     notifyListeners();
   }
 
+  // set location status
   void setStatus(LocationStatus newStatus) {
     status = newStatus;
     notifyListeners();
   }
 
+  // request permission access
   Future requestPermissionAccess() async {
     status = LocationStatus.loading;
     final permission = await Geolocator.checkPermission();
     if (permission != LocationPermission.always ||
         permission != LocationPermission.whileInUse) {
-      await Geolocator.requestPermission();
+      final permissionResult = await Geolocator.requestPermission();
+      if (permissionResult == LocationPermission.whileInUse ||
+          permissionResult == LocationPermission.always) {
+        status = LocationStatus.locationPermissionAllowed;
+      }
     }
-    status = LocationStatus.locationPermissionAllowed;
     notifyListeners();
   }
 
+  // get user location
   Future getUserLocation() async {
     status = LocationStatus.loading;
     position = await Geolocator.getCurrentPosition();
@@ -121,26 +117,24 @@ class LocationViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // get nearby parks
   Future getNearbyParks() async {
     final response = await _googleMapsService.getNearbyParks(
       position!.latitude,
       position!.longitude,
     );
-    response.fold(
-      (Object errorMessage) {
-        print("failure");
-      },
-      (List<ParkModel> list) {
-        print("bbb");
-        parks = list;
-        status = LocationStatus.parksLoaded;
-      },
-    );
+    response.fold((Object errorMessage) {}, (List<ParkModel> list) {
+      parks = list;
+      status = LocationStatus.parksLoaded;
+    });
     notifyListeners();
   }
 
+  // fetching the route
   Future fetchRoute(String mode) async {
-    if (position == null || parks.isEmpty) return;
+    if (position == null || parks.isEmpty) {
+      return;
+    }
 
     status = LocationStatus.loading;
     notifyListeners();
@@ -154,7 +148,9 @@ class LocationViewModel extends ChangeNotifier {
       mode,
     );
 
-    if (points.isEmpty) return;
+    if (points.isEmpty) {
+      return;
+    }
 
     // Save coordinates
     routeCoordinates[mode] = points;

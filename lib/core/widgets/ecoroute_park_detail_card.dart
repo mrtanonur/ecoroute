@@ -13,7 +13,7 @@ class EcorouteParkDetailCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LocationViewModel viewModel = context.read<LocationViewModel>();
-    String? selectedParkId = viewModel.selectedPark;
+    String? selectedParkId = viewModel.selectedParkId;
     ParkModel park = viewModel.parks.firstWhere(
       (park) => park.id == selectedParkId,
     );

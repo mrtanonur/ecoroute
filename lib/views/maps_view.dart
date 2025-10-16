@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ecoroute/core/widgets/ecoroute_park_detail_card.dart';
 import 'package:ecoroute/core/widgets/ecoroute_park_tile.dart';
 import 'package:ecoroute/l10n/app_localizations.dart';
@@ -28,8 +30,9 @@ class _MapsViewState extends State<MapsView>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
-      if (_tabController.indexIsChanging)
-        return; // wait for animation to finish
+      if (_tabController.indexIsChanging) {
+        return;
+      } // wait for animation to finish
       // Update the active polyline based on selected tab
       String mode;
       switch (_tabController.index) {
@@ -82,7 +85,7 @@ class _MapsViewState extends State<MapsView>
 
   void _onMapCreated(GoogleMapController controller) {
     _mapController = controller;
-    _locationViewModel!.setMapController(controller); // 🎯 ADD THIS
+    _locationViewModel!.setMapController(controller);
   }
 
   @override
@@ -98,7 +101,6 @@ class _MapsViewState extends State<MapsView>
     return Consumer<LocationViewModel>(
       builder: (context, viewModel, child) {
         Set<Marker> markers = {};
-        Set<Polyline> polylines = {};
 
         if (markers.isEmpty &&
             (viewModel.status == LocationStatus.parksLoaded ||
@@ -124,7 +126,7 @@ class _MapsViewState extends State<MapsView>
             return Scaffold(
               appBar: viewModel.status == LocationStatus.routeLoaded
                   ? AppBar(
-                      leading: null,
+                      automaticallyImplyLeading: false,
                       bottom: TabBar(
                         controller: _tabController,
                         tabs: [
@@ -139,7 +141,11 @@ class _MapsViewState extends State<MapsView>
                   (viewModel.status != LocationStatus.parksLoaded &&
                       viewModel.status != LocationStatus.routeLoaded)
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: SizeConstants.s60),
+                      padding: Platform.isAndroid
+                          ? const EdgeInsetsGeometry.only(
+                              bottom: SizeConstants.s96,
+                            )
+                          : const EdgeInsets.only(bottom: SizeConstants.s60),
                       child: FloatingActionButton(
                         child: const Icon(Icons.search),
                         onPressed: () async {
@@ -199,20 +205,14 @@ class _MapsViewState extends State<MapsView>
                       ),
                     ),
                   if (viewModel.status == LocationStatus.routeLoaded)
-                    Positioned(
-                      bottom: SizeConstants.s0,
-                      left: SizeConstants.s0,
-                      right: SizeConstants.s0,
-                      height: SizeConstants.s100, // give it space!
-                      child: TabBarView(
-                        controller: _tabController,
-                        physics: NeverScrollableScrollPhysics(),
-                        children: [
-                          SizedBox.shrink(),
-                          SizedBox.shrink(),
-                          SizedBox.shrink(),
-                        ],
-                      ),
+                    TabBarView(
+                      controller: _tabController,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        SizedBox.shrink(),
+                        SizedBox.shrink(),
+                        SizedBox.shrink(),
+                      ],
                     ),
 
                   if (viewModel.status == LocationStatus.parksLoaded ||
@@ -249,7 +249,9 @@ class _ParkListPageState extends State<ParkListPage> {
     LocationViewModel viewModel = context.read<LocationViewModel>();
 
     return DraggableScrollableSheet(
-      initialChildSize: 0.5,
+      initialChildSize: viewModel.status == LocationStatus.routeLoaded
+          ? 0.2 // smaller size when route is loaded
+          : 0.5,
       minChildSize: 0.05,
       maxChildSize: 0.9,
       expand: false,

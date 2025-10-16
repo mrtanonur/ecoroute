@@ -39,9 +39,10 @@ class _SettingsViewState extends State<SettingsView> {
   Future authListener() async {
     AuthStatus status = context.read<AuthViewModel>().status;
     if (status == AuthStatus.signOut) {
-      Navigator.pushReplacement(
+      Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => SignInView()),
+        (route) => false,
       );
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(AppLocalizations.of(context)!.youAreSignedOut)),

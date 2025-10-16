@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:ecoroute/dependency_injection.dart';
 import 'package:ecoroute/models/park_model.dart';
 import 'package:either_dart/either.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,7 +7,7 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GoogleMapsService {
-  final Dio dio = Dio();
+  final Dio dio = sl.get<Dio>();
   String baseUrl = "https://places.googleapis.com/v1/places:searchNearby";
 
   Future<Either<Object, List<ParkModel>>> getNearbyParks(
@@ -37,13 +38,11 @@ class GoogleMapsService {
         },
       );
       List data = response.data!["places"];
-      print(response.data);
       List<ParkModel> parkList = data
           .map((park) => ParkModel.fromJson(park))
           .toList();
       return (Right(parkList));
     } catch (exception) {
-      print(exception);
       return Left(exception);
     }
   }

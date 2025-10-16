@@ -13,7 +13,6 @@ class FirebaseFirestoreService {
 
   Future<Either<String, void>> storeUserData(UserModel userModel) async {
     try {
-      print(userModel.toJson());
       await _firebaseFirestore
           .collection(_userCollection)
           .doc(userModel.id)
@@ -28,45 +27,41 @@ class FirebaseFirestoreService {
   Future<Either<String, UserModel>> getUserData() async {
     try {
       String id = _firebaseAuth.currentUser!.uid;
-      print(id);
       final response = await _firebaseFirestore
           .collection(_userCollection)
           .doc(id)
           .get();
-      print(response);
       final UserModel userModel = UserModel.fromJson(response.data()!);
-      print(userModel);
 
       return Right(userModel);
     } on FirebaseException catch (exception) {
-      print(exception);
       return Left(exception.message!);
     }
   }
 
-  Future<Either<String, void>> addFavorite(ParkModel restaurantModel) async {
+  Future<Either<String, void>> addFavorite(ParkModel parkModel) async {
     try {
       String id = _firebaseAuth.currentUser!.uid;
       await _firebaseFirestore
           .collection(_userCollection)
           .doc(id)
           .collection(_favoriteCollection)
-          .doc(restaurantModel.id)
-          .set(restaurantModel.toJson());
+          .doc(parkModel.id)
+          .set(parkModel.toJson());
       return const Right(null);
     } on FirebaseException catch (exception) {
       return Left(exception.message!);
     }
   }
 
-  Future<Either<String, void>> removeFavorite(String restaurantId) async {
+  Future<Either<String, void>> removeFavorite(String parkId) async {
     try {
       String id = _firebaseAuth.currentUser!.uid;
       await _firebaseFirestore
           .collection(_userCollection)
           .doc(id)
           .collection(_favoriteCollection)
-          .doc(restaurantId)
+          .doc(parkId)
           .delete();
       return const Right(null);
     } on FirebaseException catch (exception) {

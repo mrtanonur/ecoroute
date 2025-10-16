@@ -1,11 +1,11 @@
 import 'package:ecoroute/core/widgets/ecoroute_app_bar.dart';
 import 'package:ecoroute/core/widgets/ecoroute_button.dart';
 import 'package:ecoroute/core/widgets/ecoroute_textformfield.dart';
-import 'package:ecoroute/dependency_injection.dart';
 import 'package:ecoroute/l10n/app_localizations.dart';
 import 'package:ecoroute/view_models/auth_view_model.dart';
 import 'package:ecoroute/views/sign_in_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../core/utils/constants/constants.dart';
 
@@ -46,9 +46,10 @@ class _ForgotPasswordViewState extends State<ForgotPasswordView> {
               SizedBox(height: SizeConstants.s36),
               TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement(
+                  Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => SignInView()),
+                    (route) => false,
                   );
                 },
                 child: Text(AppLocalizations.of(context)!.goToSignInPage),
@@ -69,8 +70,6 @@ class ForgotPasswordForm extends StatefulWidget {
 }
 
 class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
-  // final AuthViewModel _authViewModel = sl.get<AuthViewModel>();
-
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<FormState> _globalKey = GlobalKey<FormState>();
   bool isLoading = false;
@@ -84,8 +83,9 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
         children: [
           EcorouteTextFormfield(
             validator: (value) {
-              if (value == null || value.isEmpty)
+              if (value == null || value.isEmpty) {
                 return AppLocalizations.of(context)!.enterYourEmail;
+              }
               return null;
             },
             hintText: AppLocalizations.of(context)!.email,
@@ -101,7 +101,7 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                 setState(() {
                   isLoading = true;
                 });
-                sl.get<AuthViewModel>().sendPasswordResetEmail(
+                context.read<AuthViewModel>().sendPasswordResetEmail(
                   _emailController.text,
                 );
                 setState(() {

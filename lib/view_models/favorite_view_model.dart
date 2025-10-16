@@ -1,4 +1,5 @@
 import 'package:ecoroute/core/utils/local_data_source/favorite_local_data_source.dart';
+import 'package:ecoroute/dependency_injection.dart';
 import 'package:ecoroute/models/park_model.dart';
 import 'package:ecoroute/services/firebase_firestore_service.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,8 @@ import 'package:flutter/material.dart';
 enum FavoriteStatus { initial, favoritesLoaded, failure }
 
 class FavoriteViewModel extends ChangeNotifier {
-  final FirebaseFirestoreService firestoreService = FirebaseFirestoreService();
+  final FirebaseFirestoreService firestoreService = sl
+      .get<FirebaseFirestoreService>();
   List<ParkModel?> favoriteParks = [];
   String? error;
   FavoriteStatus status = FavoriteStatus.initial;
@@ -18,7 +20,6 @@ class FavoriteViewModel extends ChangeNotifier {
         favoriteParks = FavoriteLocalDataSource.readAll();
         error = errorMessage;
         status = FavoriteStatus.failure;
-        print("provider failure");
       },
       (List<ParkModel> favorites) {
         favoriteParks = favorites;

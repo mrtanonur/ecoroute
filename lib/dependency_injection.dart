@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:ecoroute/core/utils/local_data_source/favorite_local_data_source.dart';
 import 'package:ecoroute/core/utils/local_data_source/main_local_data_source.dart';
 import 'package:ecoroute/models/park_model.dart';
@@ -31,21 +32,19 @@ Future initializeDependencies() async {
   await MainLocalDataSource.openBox();
   await FavoriteLocalDataSource.openBox();
 
-  sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
-  sl.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
-  sl.registerLazySingleton<FirebaseAnalytics>(() => FirebaseAnalytics.instance);
+  sl.registerLazySingleton(() => Dio());
 
-  sl.registerLazySingleton<FirebaseAuthenticationService>(
-    () => FirebaseAuthenticationService(),
-  );
-  sl.registerLazySingleton<FirebaseFirestoreService>(
-    () => FirebaseFirestoreService(),
-  );
-  sl.registerLazySingleton<GoogleMapsService>(() => GoogleMapsService());
+  sl.registerSingleton(FirebaseAuth.instance);
+  sl.registerSingleton(FirebaseFirestore.instance);
+  sl.registerSingleton(FirebaseAnalytics.instance);
+
+  sl.registerSingleton(FirebaseAuthenticationService());
+  sl.registerSingleton(FirebaseFirestoreService());
+  sl.registerSingleton(GoogleMapsService());
   sl.registerLazySingleton<OpenWeatherService>(() => OpenWeatherService());
 
-  sl.registerLazySingleton(() => AuthViewModel());
-  sl.registerLazySingleton(() => MainViewModel());
-  sl.registerLazySingleton(() => LocationViewModel());
+  sl.registerSingleton(AuthViewModel());
+  sl.registerSingleton(MainViewModel());
+  sl.registerSingleton(LocationViewModel());
   sl.registerLazySingleton(() => FavoriteViewModel());
 }

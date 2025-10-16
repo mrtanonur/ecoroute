@@ -67,20 +67,13 @@ class AuthViewModel extends ChangeNotifier {
 
   Future storeUserData() async {
     final response = await _firebaseFirestoreService.storeUserData(userData!);
-    print(userData!);
 
-    response.fold(
-      (String errorMessage) {
-        error = errorMessage;
-        status = AuthStatus.failure;
-        print("store data failure");
+    response.fold((String errorMessage) {
+      error = errorMessage;
+      status = AuthStatus.failure;
 
-        notifyListeners();
-      },
-      (_) {
-        print(userData!.email);
-      },
-    );
+      notifyListeners();
+    }, (_) {});
   }
 
   Future signIn(String email, String password) async {
@@ -111,15 +104,43 @@ class AuthViewModel extends ChangeNotifier {
       (String errorMessage) {
         error = errorMessage;
         status = AuthStatus.failure;
-        print("failure");
 
         notifyListeners();
       },
       (UserModel userModel) {
         userData = userModel;
-        print(userData!.email);
       },
     );
+  }
+
+  // google sign in
+  Future googleSignIn() async {
+    final response = await _firebaseAuthService.googleSignIn();
+    response.fold(
+      (String errorMessage) {
+        error = errorMessage;
+        status = AuthStatus.failure;
+      },
+      (_) {
+        status = AuthStatus.signIn;
+      },
+    );
+    notifyListeners();
+  }
+
+  // apple sign in
+  Future appleSignIn() async {
+    final response = await _firebaseAuthService.appleSignIn();
+    response.fold(
+      (String errorMessage) {
+        error = errorMessage;
+        status = AuthStatus.failure;
+      },
+      (User? user) {
+        status = AuthStatus.signIn;
+      },
+    );
+    notifyListeners();
   }
 
   Future sendPasswordResetEmail(String email) async {

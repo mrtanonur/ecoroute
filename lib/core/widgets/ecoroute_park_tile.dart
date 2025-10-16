@@ -41,7 +41,6 @@ class EcorouteParkTile extends StatelessWidget {
               onPressed: () async {
                 context.read<FavoriteViewModel>().favorite(park);
                 await sl.get<FirebaseAnalytics>().logEvent(name: "favorite");
-                throw StateError("asdasd");
               },
               icon: context.watch<FavoriteViewModel>().isFavorite(park)
                   ? const Icon(Icons.bookmark)
@@ -49,7 +48,7 @@ class EcorouteParkTile extends StatelessWidget {
             ),
           ],
         ),
-        Text(park.address, style: const TextStyle(fontSize: 14)),
+        Text(park.address, style: const TextStyle(fontSize: SizeConstants.s14)),
 
         const SizedBox(height: SizeConstants.s4),
 

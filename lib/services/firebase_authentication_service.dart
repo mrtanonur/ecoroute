@@ -57,23 +57,38 @@ class FirebaseAuthenticationService {
   //google sign in
   Future<Either<String, void>> googleSignIn() async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn.instance;
-      await googleSignIn.initialize();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
-      print(googleSignIn);
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
 
-      final GoogleSignInAccount? googleUser = await googleSignIn
-          .attemptLightweightAuthentication();
-      print(googleUser);
-
-      googleUser ?? await googleSignIn.authenticate();
-
-      final GoogleSignInAuthentication googleAuth = googleUser!.authentication;
-
-      final userCredential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
       );
-      await _firebaseAuth.signInWithCredential(userCredential);
+
+      await _firebaseAuth.signInWithCredential(credential);
+      // try {
+      //   final GoogleSignIn googleSignIn = GoogleSignIn.instance;
+      //   await googleSignIn.initialize();
+
+      //   print(googleSignIn);
+
+      //   final GoogleSignInAccount? googleUser = await googleSignIn
+      //       .attemptLightweightAuthentication();
+      //   print(googleUser);
+
+      //   googleUser ?? await googleSignIn.authenticate();
+
+      //   final GoogleSignInAuthentication googleAuth = googleUser!.authentication;
+
+      //   final userCredential = GoogleAuthProvider.credential(
+      //     idToken: googleAuth.idToken,
+      //     accessToken: googleAuth.idToken,
+      //   );
+      //   await _firebaseAuth.signInWithCredential(userCredential);
 
       return const Right(null);
     } on FirebaseAuthException catch (exception) {
@@ -99,7 +114,6 @@ class FirebaseAuthenticationService {
       );
       return Right(userCredential.user);
     } on FirebaseAuthException catch (exception) {
-      print(exception.message);
       return Left(exception.message!);
     }
   }
