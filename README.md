@@ -76,3 +76,35 @@ Reusable widget components following DRY principles
 Custom themed widgets for consistent design
 
 Platform-specific adaptations (Material/Cupertino)
+
+🌟 Core Features Explained
+
+1. Route Visualization
+2. 
+The app displays three route types simultaneously:
+
+🔵 Walking (dashed blue line)
+
+🟠 Cycling (solid orange line)
+
+🟢 Driving (solid green line)
+
+Routes are animated on display for better UX.
+
+2. Air Quality Integration
+3. 
+Real-time AQI data helps users:
+
+Choose healthier travel options
+
+Understand destination air quality
+
+Make eco-conscious decisions
+
+3. Offline Support
+
+Favorite parks cached locally with Hive
+
+Automatic sync when connection restored
+
+Graceful fallback for offline scenarios
