@@ -1,3 +1,14 @@
+import java.util.Properties
+
+fun getEnvValue(key: String): String {
+    val envFile = rootProject.file(".env")
+    val props = Properties()
+    if (envFile.exists()) {
+        envFile.inputStream().use { props.load(it) }
+    }
+    return props.getProperty(key) ?: ""
+}
+
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
@@ -31,6 +42,10 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        manifestPlaceholders.putAll(mapOf("GOOGLE_MAPS" to (getEnvValue("GOOGLE_MAPS") ?: ""))
+    )
+        
+
     }
 
     buildTypes {
