@@ -76,29 +76,3 @@ Reusable widget components following DRY principles
 Custom themed widgets for consistent design
 
 Platform-specific adaptations (Material/Cupertino)
-
-lib/
-
-├── core/
-
-│   ├── utils/
-
-│   │   ├── constants/          # App-wide constants
-
-│   │   ├── local_data_source/  # Local storage handlers
-
-│   │   └── themes/             # Theme configurations
-
-│   └── widgets/                # Reusable widgets
-
-├── models/                     # Data models
-
-├── services/                   # API services
-
-├── view_models/                # State management (Provider)
-
-├── views/                      # UI screens
-├── l10n/                       # Localization files
-├── dependency_injection.dart   # Service locator setup
-└── main.dart                   # App entry point
-
